@@ -14,5 +14,20 @@ services:
       - wwwnet
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  mysql:
+    image: mysql:${MYSQL_VERSION:-latest}
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+            - data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
+    container_name: mysql
 networks:
   wwwnet:
