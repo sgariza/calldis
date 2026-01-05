@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: "docker/web/Dockerfile"
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - "80:80"
+      - "443:443"
+    working_dir: /var/www/html
+    networks:
+      - wwwnet
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+networks:
+  wwwnet:
