@@ -30,4 +30,4 @@ services:
       MYSQL_PASSWORD: "${DB_PASSWORD}"
     container_name: mariadb
 networks:
-  wwwnet:
+  calldisnet:
