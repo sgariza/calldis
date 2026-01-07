@@ -1,19 +1,32 @@
 version: '3.8'
 services:
-  web:
-    build:
-      context: .
-      dockerfile: "docker/web/Dockerfile"
+  php:
+    build: 
+      context: './php/'
+      args:
+       PHP_VERSION: ${PHP_VERSION}
+    networks:
+      - calldisbknd
     volumes:
-      - ./:/var/www/html/
+      - ${PROJECT_ROOT}/:/var/www/html/
+    container_name: php
+  apache:
+    build:
+      context: './apache/'
+      args:
+       APACHE_VERSION: ${APACHE_VERSION}
+    depends_on:
+      - php
+      - mariadb
+    networks:
+      - calldisnet
+      - calldisbknd
     ports:
       - "80:80"
       - "443:443"
-    working_dir: /var/www/html
-    networks:
-      - wwwnet
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${PROJECT_ROOT}/:/var/www/html/
+    container_name: apache
   mariadb:
     image: mariadb:${MARIADB_VERSION}
     restart: always
@@ -22,7 +35,7 @@ services:
     volumes:
             - data:/var/lib/mysql
     networks:
-      - backend
+      - calldisbknd
     environment:
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
       MYSQL_DATABASE: "${DB_NAME}"
@@ -31,3 +44,4 @@ services:
     container_name: mariadb
 networks:
   calldisnet:
+  calldisbknd:
