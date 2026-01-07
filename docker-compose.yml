@@ -14,8 +14,8 @@ services:
       - wwwnet
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  mysql:
-    image: mysql:${MYSQL_VERSION:-latest}
+  mariadb:
+    image: mariadb:${MARIADB_VERSION}
     restart: always
     ports:
       - "3306:3306"
