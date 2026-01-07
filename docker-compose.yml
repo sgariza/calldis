@@ -45,3 +45,5 @@ services:
 networks:
   calldisnet:
   calldisbknd:
+volumes:
+    data:
