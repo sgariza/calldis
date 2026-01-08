@@ -6,6 +6,7 @@ RUN apk update; \
 
 RUN docker-php-ext-install mysqli
 
+
 RUN curl -sSLf \
         -o /usr/local/bin/install-php-extensions \
         https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions && \

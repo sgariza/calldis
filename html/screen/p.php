@@ -2,6 +2,7 @@
 // Incluye la configuración desde config.php
 include_once('config.php');
 ?>
+
 <script>
     // Pasar variables PHP a JavaScript
     // El objeto config contiene valores de configuración para uso en JS
