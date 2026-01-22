@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ERROR);
+error_reporting(E_ALL);
 setlocale(LC_TIME, 'es_ES');
 date_default_timezone_set('Europe/Madrid');
 
@@ -145,16 +145,15 @@ $endpoints['pantalla'] = function ($requestData): void {
  * @return void
  */
 $endpoints['turnos'] = function ($requestData): void {
-    //
+    //$db = new SQLite3('db.db');
     include_once('config.php');
-    $mysqli = new mysqli("172.17.0.3", "root", "5er610", "turninline");
-    if ($mysqli->connect_errno) {
-        echo "Fallo al conectar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+    $sql = "SELECT (unixepoch()*1000)-modificado AS fechahora, id, usercode, posicion, vivo, modificado, CASE WHEN ((unixepoch()*1000)-modificado)<90000 THEN true ELSE false END AS actualizado FROM turno WHERE vivo = true AND ((unixepoch()*1000)-modificado) < (3600 * 24000) ORDER BY modificado DESC LIMIT 0," . $config['ORIENTACIONES'][$config['ORIENTACION']][$config['SIZE']]['nFilas'];
+    $result = $db->query($sql);
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $tabla[] = $row;
     }
-    $sql = "SELECT id, usercode, posicion, vivo, modificado, IF((NOW()-modificado)<90,true,false) AS actualizado FROM turno WHERE vivo = true AND (NOW()-modificado) < (3600 * 24) ORDER BY modificado DESC LIMIT 0," . $config['ORIENTACIONES'][$config['ORIENTACION']][$config['SIZE']]['nFilas'];
-    $result = $mysqli->query($sql);
-    echo(json_encode($mysqli->query($sql)->fetch_all(MYSQLI_ASSOC)));
-    $mysqli->close();
+    $tabla[] = ['usercode'=>'PRU01','posicion'=>'Consulta 9'];
+    echo(json_encode($tabla));
 };
 
 /**
@@ -194,25 +193,20 @@ $endpoints['hora'] = function ($requestData): void {
  * @return void
  */
 $endpoints['trigger'] = function ($requestData): void {
-    $error = "";
+    $error = $requestData['consultation_id'] . " ... \n";
+    //$db = new SQLite3('db.db');
     include_once('config.php');
-    $mysqli = new mysqli("172.17.0.3", "root", "5er610", "turninline");
-    if ($mysqli->connect_errno) {
-        echo "Fallo al conectar a MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-    }
     $sql = "SELECT access_token FROM token LIMIT 1";
-    $result = $mysqli->query($sql);
-    $row = $result->fetch_assoc();
+    $row = $db->query($sql)->fetchArray(SQLITE3_ASSOC);
     $api_token = $row['access_token'];
-    //$mysqli->close();
     if (!check_access_token($api_token)) {
-        $error.= "El token de acceso no es válido o ha expirado.";
+        $error.= "El token de acceso $api_token no es válido o ha expirado.\n";
         $api_token = get_access_token();
+        $error.= "Se ha generado un nuevo token. $api_token";
         if ($api_token) {
             $sql = "UPDATE token SET access_token = '" . $api_token . "'";
-            if (!$mysqli->query($sql)) {
-                $error.= "Error al actualizar el token en la base de datos: (" . $mysqli->errno . ") " . $mysqli->error;
-            }
+            $res=$db->exec($sql);
+            $error.=("|".($db->lastErrorMsg())."|");
         } else {
             $error.= "No se pudo obtener un nuevo token de acceso.";
         }
@@ -239,34 +233,29 @@ $endpoints['trigger'] = function ($requestData): void {
     if ($data['ward'] != null) {
         $ward = get_data($data['ward'], $api_token)['name'];
     }
-    /*$ward = "";
-    if ($data['ward'] != null) {
-        $ward = get_data($data['ward'], $api_token)['name'];
-    }*/
+
     $veterinario = "";
     if ($data['supervising_veterinarian'] != null) {
         $veterinario = get_data($data['supervising_veterinarian'], $api_token)['id'];
     }
 
     $sql = "SELECT id FROM turno WHERE idprovet = " . $requestData['consultation_id'] . " LIMIT 1";
-    $result = $mysqli->query($sql);
     $status = $data['status'] == '8' ? 'true' : 'false';
-    if ($result->num_rows < 1) {
-        $sql = " INSERT INTO turno (id, idprovet, usercode, posicion, veterinario, vivo, modificado) VALUES (cast(rand() * power(10,17) as UNSIGNED)," . $requestData['consultation_id'] . ",'" . $code_patient . "', '" . $ward . "', '" . $veterinario . "', " . $status . ", NOW())";
-        file_put_contents('insert.sql', $sql . "\n", FILE_APPEND);
-        if (!$mysqli->query($sql)) {
-            $error .= "Error al insertar el turno: (" . $mysqli->errno . ") " . $mysqli->error;
+
+    if ($result = $db->query($sql)->fetchArray(SQLITE3_ASSOC)) {
+        $sql = "UPDATE turno SET posicion = '" . $ward . "', veterinario = '" . $veterinario . "', vivo = " . $status . ", modificado = unixepoch()*1000 WHERE idprovet = " . $requestData['consultation_id'];
+        file_put_contents('insert.sql', time() . " " . $sql . "\n", FILE_APPEND);
+        if (!$db->exec($sql)) {
+            $error .= "Error al actualizzar el turno: ".var_dump($row)." : (" . $db->lastErrorCode() . ") " . $db->lastErrorMsg();
         }
-        $mysqli->close();
     }
     else {
-        $sql = " UPDATE turno SET posicion = '" . $ward . "', veterinario = '" . $veterinario . "', vivo = " . $status . ", modificado = NOW() WHERE idprovet = " . $requestData['consultation_id'];
-        if (!$mysqli->query($sql)) {
-            $error .= "Error al actualizar el turno: (" . $mysqli->errno . ") " . $mysqli->error;
+        $sql = "INSERT INTO turno (id, idprovet, usercode, posicion, veterinario, vivo, modificado) VALUES (ABS(RANDOM() % 90000000000000000) + 10000000000000000," . $requestData['consultation_id'] . ",'" . $code_patient . "', '" . $ward . "', '" . $veterinario . "', " . $status . ", unixepoch()*1000)";
+        file_put_contents('insert.sql', time() . " " . $sql . "\n", FILE_APPEND);
+        if (!$db->exec($sql)) {
+            $error .= "Error al insertar el turno: (" . $db->lastErrorCode() . ") " . $db->lastErrorMsg();
         }
-        $mysqli->close();
     }
-
 
     // Define el nombre del archivo donde se guardarán los datos.
     $archivo = 'get_data.txt';
@@ -278,7 +267,7 @@ $endpoints['trigger'] = function ($requestData): void {
     // Escribe el contenido en el archivo.
     // El segundo parámetro, FILE_APPEND, añade el contenido al final del archivo en lugar de sobrescribirlo.
     // Puedes eliminarlo si quieres sobrescribir el archivo en cada ejecución.
-    var_dump(file_put_contents($archivo, $contenido . "\n\n", FILE_APPEND));
+    var_dump(file_put_contents($archivo, time() . " " . $contenido . "\n\n", FILE_APPEND));
 
     echo $contenido . "\nDatos de \$_POST guardados en '{$archivo}' con éxito.";
 
@@ -391,8 +380,3 @@ function get_token() {
     $response = json_decode($result, true);
     return $response['access_token'];
 }
-
-
-/*
-echo ("<h1>$endpointName</h1>");
-print_r($parsedURI);*/
