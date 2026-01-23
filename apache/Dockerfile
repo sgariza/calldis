@@ -6,6 +6,7 @@ RUN apk update; \
     apk add openssl
 
 # Copy apache vhost file to proxy php requests to php-fpm container
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY calldis.apache.conf /usr/local/apache2/conf/calldis.apache.conf
 RUN echo "Include /usr/local/apache2/conf/calldis.apache.conf" \
     >> /usr/local/apache2/conf/httpd.conf
