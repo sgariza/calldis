@@ -11,11 +11,7 @@ RUN echo "Include /usr/local/apache2/conf/calldis.apache.conf" \
     >> /usr/local/apache2/conf/httpd.conf
 
 # Enable Apache mods
-RUN a2enmod ssl \
-    && a2enmod allowmethods \
-    && a2enmod headers \
-    && a2enmod mime \
-    && a2enmod rewrite
+RUN a2enmod ssl
 
 # SSL 	
 RUN mkdir -p /usr/local/apache2/ssl
