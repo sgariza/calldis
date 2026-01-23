@@ -5,12 +5,17 @@ RUN apk update; \
     apk upgrade; \
     apk add openssl
 
-    
 # Copy apache vhost file to proxy php requests to php-fpm container
 COPY calldis.apache.conf /usr/local/apache2/conf/calldis.apache.conf
 RUN echo "Include /usr/local/apache2/conf/calldis.apache.conf" \
     >> /usr/local/apache2/conf/httpd.conf
 
+# Enable Apache mods
+RUN a2enmod ssl \
+    && a2enmod allowmethods \
+    && a2enmod headers \
+    && a2enmod mime \
+    && a2enmod rewrite
 
 # SSL 	
 RUN mkdir -p /usr/local/apache2/ssl
