@@ -7,7 +7,7 @@ services:
     networks:
       - calldisbknd
     volumes:
-      - ${PROJECT_ROOT}/:/var/www/html/
+      - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: php
   apache:
     build:
@@ -23,7 +23,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ${PROJECT_ROOT}/:/var/www/html/
+      - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: apache
 networks:
   calldisnet:
