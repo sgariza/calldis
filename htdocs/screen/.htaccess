@@ -1,0 +1,26 @@
+<Files "*.php">
+    Require all granted
+</Files>
+
+<Files "index.php">
+    Require all granted
+</Files>
+
+<Files "p.php">
+	Require all granted
+</Files>
+
+RewriteEngine On
+#Quita los comentarios para forzar https, debes tener un certificado SSL.
+#RewriteCond %{HTTPS} off
+#RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+#Activa el HTTP Authorization Header si usas php-cgi y puedes usar normalmente 
+# $_SERVER["HTTP_AUTHORIZATION"]
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+RewriteBase /screen/
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)$ index.php [QSA,L]
