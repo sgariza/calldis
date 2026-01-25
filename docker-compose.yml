@@ -25,7 +25,7 @@ services:
     volumes:
       - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: apache
-    enviroment:
+    environment:
       - PHP_VERSION = ${PHP_VERSION}
       - APACHE_VERSION = ${APACHE_VERSION}
       - DB_PATH = ${DB_PATH}
