@@ -25,6 +25,12 @@ services:
     volumes:
       - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: apache
+    enviroment:
+      - PHP_VERSION = ${PHP_VERSION}
+      - APACHE_VERSION = ${APACHE_VERSION}
+      - DB_PATH = ${DB_PATH}
+      - DB_FILE = ${DB_FILE}
+PROJECT_ROOT=./htdocs
 networks:
   calldisnet:
   calldisbknd:
