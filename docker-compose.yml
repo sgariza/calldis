@@ -30,7 +30,7 @@ services:
       - APACHE_VERSION = ${APACHE_VERSION}
       - DB_PATH = ${DB_PATH}
       - DB_FILE = ${DB_FILE}
-PROJECT_ROOT=./htdocs
+      - PROJECT_ROOT = ${PROJECT_ROOT}
 networks:
   calldisnet:
   calldisbknd:
