@@ -117,7 +117,7 @@ $config = [
     'colorAlert' => '#D40000', // Color de alerta
 ];
 //echo ($_FILES[]);
-$dbfile = $getenv('DB_PATH') . $getenv('DB_FILE') ?? '/usr/local/apache2/htdocs/screen/db.db';
+$dbfile = getenv('DB_PATH') . getenv('DB_FILE') ?? '/usr/local/apache2/htdocs/screen/db.db';
 $db = new SQLite3($dbfile);
 $res=$db->query("SELECT * FROM opciones");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
