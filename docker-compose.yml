@@ -9,6 +9,12 @@ services:
     volumes:
       - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: php
+    environment:
+      PHP_VERSION: ${PHP_VERSION}
+      APACHE_VERSION: ${APACHE_VERSION}
+      DB_PATH: ${DB_PATH}
+      DB_FILE: ${DB_FILE}
+      PROJECT_ROOT: ${PROJECT_ROOT}
   apache:
     build:
       context: './apache/'
