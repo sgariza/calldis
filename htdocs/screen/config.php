@@ -115,6 +115,7 @@ $config = [
     'imgWidth' => '35vh', // Ancho de la imagen
     'colorText' => '#eee', // Color del texto
     'colorAlert' => '#D40000', // Color de alerta
+    'headImg' => 'calldis_comp.svg', // Imagen de encabezado
 ];
 //echo ($_FILES[]);
 $dbfile = getenv('DB_PATH') . getenv('DB_FILE') ?? '/usr/local/apache2/htdocs/screen/db.db';
