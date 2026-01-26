@@ -3,7 +3,8 @@ FROM httpd:${APACHE_VERSION:+${APACHE_VERSION}-}alpine
 
 RUN apk update; \
     apk upgrade; \
-    apk add openssl
+    apk add openssl; \
+    apk add --no-cache tzdata
 
 # Copy apache vhost file to proxy php requests to php-fpm container
 COPY httpd.conf /usr/local/apache2/conf/httpd.conf
