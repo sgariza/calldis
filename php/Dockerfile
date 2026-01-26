@@ -2,7 +2,8 @@ ARG PHP_VERSION=""
 FROM php:${PHP_VERSION:+${PHP_VERSION}-}fpm-alpine
 
 RUN apk update; \
-    apk upgrade; 
+    apk upgrade; \
+    apk add --no-cache tzdata
 
 RUN curl -sSLf \
         -o /usr/local/bin/install-php-extensions \
