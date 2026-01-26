@@ -3,7 +3,8 @@ FROM php:${PHP_VERSION:+${PHP_VERSION}-}fpm-alpine
 
 RUN apk update; \
     apk upgrade; \
-    apk add --no-cache tzdata
+    apk add --no-cache tzdata; \
+    apk add --no-cache icu-libs
 
 RUN curl -sSLf \
         -o /usr/local/bin/install-php-extensions \
