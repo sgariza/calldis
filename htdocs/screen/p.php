@@ -54,7 +54,7 @@ include_once('config.php');
         <!-- Panel secundario con video y datos -->
         <div id="turnos2" class="panel publi column full medium-half medium-last">
             <div class="encabezado">
-                <div class="logo"><img src="img/clinick.svg"></img></div>
+                <div class="logo"><img src="img/<?php echo $config['headImg']; ?>"></img></div>
                 <div class="fechahora">
                     <div class="hora" id="hora"></div> <!-- Hora actual -->
                     <div class="fecha" id="fecha"></div> <!-- Fecha actual -->
