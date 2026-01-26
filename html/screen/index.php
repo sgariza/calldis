@@ -162,7 +162,15 @@ $endpoints['turnos'] = function ($requestData): void {
  * @return void
  */
 $endpoints['fechahora'] = function ($requestData): void {
-    echo(json_encode(strftime("%A %d de %B   %H:%M", strtotime("now"))));
+    //echo(json_encode(strftime("%A %d de %B   %H:%M", strtotime("now"))));
+    $dateTimeObj = new DateTime('now');
+    $dateFormatted = 
+    IntlDateFormatter::formatObject(
+    $dateTimeObj, 
+    "eeee dd MMMM yyyy - HH:mm", 
+    "es_ES" 
+    );
+    echo(json_encode(value: $dateFormatted));
 };
 
 /**
@@ -191,7 +199,7 @@ $endpoints['hora'] = function ($requestData): void {
     $dateFormatted = 
     IntlDateFormatter::formatObject(
     $dateTimeObj, 
-    "hh:mm", 
+    "HH:mm", 
     "es_ES" 
     );
     echo(json_encode(value: $dateFormatted));
