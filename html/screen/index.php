@@ -171,7 +171,7 @@ $endpoints['fechahora'] = function ($requestData): void {
  */
 $endpoints['fecha'] = function ($requestData): void {
     //echo(json_encode(".".strftime("%d de %B", time())));
-    $dateTimeObj = new DateTime('now', new DateTimeZone('Europe/Madrid'));
+    $dateTimeObj = new DateTime('now');
     $dateFormatted = 
     IntlDateFormatter::formatObject(
     $dateTimeObj, 
