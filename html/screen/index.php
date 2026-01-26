@@ -186,7 +186,15 @@ $endpoints['fecha'] = function ($requestData): void {
  * @return void
  */
 $endpoints['hora'] = function ($requestData): void {
-    echo(json_encode(strftime("%H:%M", strtotime("now"))));
+    //echo(json_encode(strftime("%H:%M", strtotime("now"))));
+    $dateTimeObj = new DateTime('now');
+    $dateFormatted = 
+    IntlDateFormatter::formatObject(
+    $dateTimeObj, 
+    "hh:mm", 
+    "es_ES" 
+    );
+    echo(json_encode(value: $dateFormatted));
 };
 
 /**
