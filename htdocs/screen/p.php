@@ -64,8 +64,13 @@ include_once('config.php');
                 <div class="entry-page-course-thumbnail">
                     <!-- Video principal -->
                     <video id="video" autoplay muted loop class="imgpost" decoding="async">
-                        <source src="video/doghealth.mp4" type="video/mp4">
-                        <!--<source src="video/6478032.mp4" type="video/mp4">-->
+                        <?php 
+                        $d = dir('video/');
+                        while (false !== ($entry = $d->read())) {
+                            echo "<source src='video/$entry' type='video/mp4'>\n";
+                        }
+                        $d->close();
+                        ?>
                         Your browser does not support the video tag.
                     </video><!--
                     <img src="img/vlcsnap-2025-05-19-17h07m29s364.png" class="imgpost" decoding="async" alt="Curso de peluquería canina – Técnico de estilismo canino y felino">
