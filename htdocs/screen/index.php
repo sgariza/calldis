@@ -199,10 +199,12 @@ $endpoints['trigger'] = function ($requestData): void {
     include_once('config.php');
     $sql = "SELECT access_token FROM token LIMIT 1";
     $row = $db->query($sql)->fetchArray(SQLITE3_ASSOC);
+    $sql = "SELECT * FROM config";
+    $config = $db->query($sql)->fetchArray(SQLITE3_ASSOC);
     $api_token = $row['access_token'];
     if (!check_access_token($api_token)) {
         $error.= "El token de acceso $api_token no es válido o ha expirado.\n";
-        $api_token = get_access_token();
+        $api_token = get_access_token($config['client_id'],$config['client_secret'],$config['api_url']."/oauth2/token/");
         $error.= "Se ha generado un nuevo token. $api_token";
         if ($api_token) {
             $sql = "UPDATE token SET access_token = '" . $api_token . "'";
@@ -295,11 +297,11 @@ if (isset($endpoints[$endpointName])) {
     $endpoints["404"](array("endpointName" => $endpointName));
 }
 
-function get_access_token() {
+function get_access_token($client_id,$client_secret,$token_url) {
     // Reemplaza 'TU_CLIENT_ID' y 'TU_CLIENT_SECRET' con tus credenciales reales
-    $client_id = 'mqqbxGo67pLRwefdXMbFuZ7Vcqt3ZkVlqwQsQUpm';
+    /*$client_id = 'mqqbxGo67pLRwefdXMbFuZ7Vcqt3ZkVlqwQsQUpm';
     $client_secret = 'KyglgUXgk7O96ApXblQ7wnRVzvfQpmV7H2jcyqzTvp0K72Nv9q4WBrM4l0InzK4cd8BuZWKAEYTLCDXceNo1xTTuEXUPWzkeydqSQXtaymjjQql7SxvEn29ejfiW2Bt2';
-    $token_url = 'https://awstest.provetcloud.com/8424/oauth2/token/';
+    $token_url = 'https://awstest.provetcloud.com/8424/oauth2/token/';*/
     $data = array(
         'grant_type' => 'client_credentials',
         'client_id' => $client_id,
