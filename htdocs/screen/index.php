@@ -202,7 +202,7 @@ $endpoints['trigger'] = function ($requestData): void {
     $sql = "SELECT * FROM config";
     $config = $db->query($sql)->fetchArray(SQLITE3_ASSOC);
     $api_token = $row['access_token'];
-    if (!check_access_token($api_token)) {
+    if (!check_access_token($api_token,$config['api_url']."/api/0.1/department/")) {
         $error.= "El token de acceso $api_token no es válido o ha expirado.\n";
         $api_token = get_access_token($config['client_id'],$config['client_secret'],$config['api_url']."/oauth2/token/");
         $error.= "Se ha generado un nuevo token. $api_token";
@@ -215,7 +215,7 @@ $endpoints['trigger'] = function ($requestData): void {
         }
     }
 
-    $data = get_data('https://awstest.provetcloud.com/8424/api/0.1/consultation/' . $requestData['consultation_id'] . '/', $api_token);
+    $data = get_data($config['api_url'].'/api/0.1/consultation/' . $requestData['consultation_id'] . '/', $api_token);
 
     // Verificar si la decodificación fue exitosa y la API devolvió datos
     if (json_last_error() != JSON_ERROR_NONE || empty($data)) {
@@ -325,8 +325,8 @@ function get_access_token($client_id,$client_secret,$token_url) {
     return $response['access_token'];
 }
 
-function check_access_token($token) {
-    $url = 'https://awstest.provetcloud.com/8424/api/0.1/department/';
+function check_access_token($token,$url) {
+    //$url = 'https://awstest.provetcloud.com/8424/api/0.1/department/';
     $options = array(
         'http' => array(
             'header'  => "Authorization: Bearer " . $token . "\r\n",
