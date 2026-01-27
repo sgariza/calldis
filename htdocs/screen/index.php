@@ -152,8 +152,8 @@ $endpoints['turnos'] = function ($requestData): void {
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $tabla[] = $row;
     }
-    $tabla[] = ['usercode'=>'PRU01','posicion'=>'Consulta 9'];
-    echo(json_encode($tabla));
+    //$tabla[] = ['usercode'=>'PRU01','posicion'=>'Consulta 9'];
+    //echo(json_encode($tabla));
 };
 
 /**
