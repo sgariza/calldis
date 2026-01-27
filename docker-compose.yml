@@ -5,7 +5,7 @@ services:
       args:
        PHP_VERSION: ${PHP_VERSION}
     networks:
-      - calldisbknd
+      - backbone
     volumes:
       - ${PROJECT_ROOT}/:/usr/local/apache2/htdocs/
     container_name: php
@@ -25,8 +25,8 @@ services:
     depends_on:
       - php
     networks:
-      - calldisnet
-      - calldisbknd
+      - front
+      - backbone
     ports:
       - "80:80"
       - "443:443"
@@ -42,7 +42,7 @@ services:
       TZ: ${TZ}
     restart: on-failure
 networks:
-  calldisnet:
-  calldisbknd:
+  front:
+  backbone:
 volumes:
     data:
