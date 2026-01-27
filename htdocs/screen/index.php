@@ -106,11 +106,12 @@ $endpoints["checktoken"] = function ($requestData): void {
     //$token = str_replace("=", "", base64_encode(random_bytes(160 / 8)));
 
     //tokens autorizados
-    $tokens = array(
+    $tokens = array_flip(file('rijwba'));
+    /*$tokens = array(
         "fa3b2c9c-a96d-48a8-82ad-0cb775dd3e5d" => "",
         "3ad1259c-0e6d-928c-a9d1-302b7b5d3321" => "",
         "d4c9f8e1-5f4b-4a3e-9f2e-1c2b3a4d5e6f" => ""
-    );
+    );*/
 
     if (!isset($requestData["token"])) {
         echo json_encode("No se recibió un token para autorizar la operación. Verifica la información enviada");
