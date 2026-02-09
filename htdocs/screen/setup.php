@@ -8,7 +8,7 @@
 <?php
 include_once('config.php');
 $sql = "SELECT * FROM config";
-while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+while ($row = $db->query($sql)->fetchArray(SQLITE3_ASSOC)) {
   $$row['opcion'] = $row['valor'];
 }
 if ($configured == 'true') {
