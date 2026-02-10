@@ -41,6 +41,11 @@ services:
       PROJECT_ROOT: ${PROJECT_ROOT}
       TZ: ${TZ}
     restart: on-failure
+  ffmpeg:
+    build:
+      context: './ffmpeg/
+      container_name: ffmpeg
+    restart: on-failure
 networks:
   front:
   backbone:
